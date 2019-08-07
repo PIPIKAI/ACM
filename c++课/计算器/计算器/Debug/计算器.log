@@ -1,0 +1,32 @@
+﻿生成启动时间为 2018/12/13 9:30:13。
+     1>项目“D:\源代码\c++课\计算器\计算器\计算器.vcxproj”在节点 2 上(build 个目标)。
+     1>InitializeBuildStatus:
+         正在对“Debug\计算器.unsuccessfulbuild”执行 Touch 任务。
+       GenerateTargetFrameworkMonikerAttribute:
+       正在跳过目标“GenerateTargetFrameworkMonikerAttribute”，因为所有输出文件相对于输入文件而言都是最新的。
+       ClCompile:
+         所有输出均为最新。
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /AI"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0" /Zi /clr:pure /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"StdAfx.h" /Fp"Debug\计算器.pch" /Fo"Debug\\" /Fd"Debug\vc100.pdb" /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt "计算器.cpp" /clr:nostdlib 
+         计算器.cpp
+         所有输出均为最新。
+       CoreResGen:
+         没有相对于源文件而言已过期的资源。正在跳过资源生成操作。
+       ResourceCompile:
+         所有输出均为最新。
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\源代码\c++课\计算器\Debug\计算器.exe" /INCREMENTAL /NOLOGO /ASSEMBLYRESOURCE:"Debug\计算器.Form1.resources" /MANIFEST /ManifestFile:"Debug\计算器.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"D:\源代码\c++课\计算器\Debug\计算器.pdb" /ASSEMBLYDEBUG /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"main" /DYNAMICBASE /FIXED:NO /NXCOMPAT /MACHINE:X86 Debug\app.res
+         Debug\AssemblyInfo.obj
+         Debug\stdafx.obj
+         "Debug\计算器.obj"
+         "Debug\.NETFramework,Version=v4.0.AssemblyAttributes.obj"
+         计算器.vcxproj -> D:\源代码\c++课\计算器\Debug\计算器.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"D:\源代码\c++课\计算器\Debug\计算器.exe;#1" /manifest "Debug\计算器.exe.intermediate.manifest"
+       FinalizeBuildStatus:
+         正在删除文件“Debug\计算器.unsuccessfulbuild”。
+         正在对“Debug\计算器.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“D:\源代码\c++课\计算器\计算器\计算器.vcxproj”(build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:02.56

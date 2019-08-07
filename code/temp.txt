@@ -1,0 +1,10 @@
+1 A dds
+2  B bbs
+3 C aad
+4 D  ffg
+6 G kkg
+5 H aas
+7 G aas
+0 0 0 0 0 0 0 0
+
+

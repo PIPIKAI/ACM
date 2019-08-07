@@ -1,0 +1,63 @@
+#include<iostream>
+#include<stdio.h>
+#include<cstring>
+#include<algorithm>
+using namespace std;
+typedef long long ll;
+ll cc(ll n)
+{
+    ll i=min(n-3,(ll)3),j=n-3;
+    ll s=n,k=1;
+    if(n==4)
+        return 4;
+    while(i>1)
+    {
+        n--;
+        s=s*n;
+        i--;
+    }
+    while(j>=1)
+    {
+        k=j*k;
+        j--;
+    }
+
+    return s-k;
+}
+int main()
+{
+    ll n,d,f[100005]={0},sum=0;
+   cin>>n>>d;
+        for(int i=0;i<n;i++)
+    {
+        scanf("%d",&f[i]);
+    }
+    sort(f,f+n);
+    sum=cc(n);
+    for(int i=0;i<n;i++)
+        cout<<f[i]<<" ";
+    /*cout<<sum<<endl;
+    ll i=0,j=n-1;
+    for(int i=0;i<n;i++)
+    {
+        int flag=0;
+        for(j=n-1;j>=0;j--)
+        {
+            if(f[j]-f[i]>d)
+            {
+                cout<<f[j]<<" "<<f[i]<<endl;
+                 sum-=(j-i- 1);
+            }
+
+            else
+                break;
+            flag++;
+        }
+        if(flag==0)
+            break;
+    }
+
+    cout<<sum<<endl;*/
+    return 0;
+}
+

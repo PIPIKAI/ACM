@@ -1,0 +1,817 @@
+POJ1011 Sticks 搜索+强剪枝（终于AC了，分享经验） 
+
+
+这个题目是不是贪心的，我就是第一次用了贪心，一直WA，相当的悲剧，贪心错误的sample：7 15 11 8 8 8 4 3 2 1，所以大家还是全部搜索。但是全部搜索必须剪枝，不然肯定是TLE的，而且本体属于强剪枝，少剪了也是TLE。
+
+经典搜索题，果然是到处充斥着剪枝才能过啊，我的代码离剪到极限还差很多
+题目给出一大堆小棍子的长度，需要把他们拼成几根长度相等的大棍子，求大棍子的最短长度
+
+看自己剪枝方法的效果时候，可以添设一个变量来记录递归次数
+如剪枝4：没有这个剪枝的情况下对以下数据需要40万次递归，而加上这个剪枝后减少到了4万多次
+对数据：
+45
+15 3 2 4 11 1 8 8 8 15 3 2 4 11 1 8 8 8 15 3 2 4 11 1 8 8 8 15 3 2 4 11 1 8 8 8 15 3 2 4 11 1 8 8 8 
+
+
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+int sticks[65];
+int used[65];
+int n,len;
+bool dfs(int i,int l,int t)//i为当前试取的棍子序号,l为要拼成一根完整的棍子还需要的长度,t初值为所有棍子总长度 
+{
+    if(l==0)
+    {
+        t-=len;
+        
+        if(t==0)return true;
+        
+        for(i=0;used[i];++i);            //剪枝1：搜索下一根大棍子的时候，找到第一个还没有使用的小棍子开始
+        
+        used[i]=1;                           //由于排序过，找到的第一根肯定最长，也肯定要使用，所以从下一根开始搜索
+        if(dfs(i+1,len-sticks[i],t))return true;
+        used[i]=0;
+            
+        t+=len;
+    }
+    else
+    {
+        for(int j=i;j<n;++j)
+        {
+            if(j>0&&(sticks[j]==sticks[j-1]&&!used[j-1]))  //剪枝2：前后两根长度相等时，如果前面那根没被使用，也就是由前面那根
+                continue;                                                //开始搜索不到正确结果，那么再从这根开始也肯定搜索不出正确结果，此剪枝威力较大
+                                                                                  
+            if(!used[j]&&l>=sticks[j])   //剪枝3：最简单的剪枝，要拼成一根大棍子还需要的长度L>=当前小棍子长度，才能选用                           
+            {
+                l-=sticks[j];
+                used[j]=1;
+                if(dfs(j,l,t))return true;
+                    
+                l+=sticks[j];
+                used[j]=0;
+                
+                if(sticks[j]==l)    //剪枝4：威力巨大的剪枝，程序要运行到此处说明往下的搜索失败，若本次的小棍长度刚好填满剩下长度，但是后
+                    break;           //面的搜索失败，则应该返回上一层
+            }
+        }
+    }
+    return false;
+}
+bool cmp(const int a, const int b)
+{ 
+    return a>b; 
+}
+int main()
+{
+    while(cin>>n&&n)
+    {
+        int sum=0;
+        for(int i=0;i<n;++i)
+        {
+            cin>>sticks[i];
+            sum+=sticks[i];
+            used[i]=0;
+        }
+        
+        sort(sticks,sticks+n,cmp);   //剪枝5：从大到小排序后可大大减少递归次数
+        
+        bool flag=false;
+        for(len=sticks[0];len<=sum/2;++len)   //剪枝6：大棍长度一定是所有小棍长度之和的因数，且最小因数应该不小于小棍中最长的长度
+        {
+            if(sum%len==0)     
+            {
+                if(dfs(0,len,sum))
+                {
+                    flag=true;
+                    cout<<len<<endl;
+                    break;
+                }
+            }
+        }
+        if(!flag)
+            cout<<sum<<endl;
+    }
+    return 0;
+}
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/lovelyloulou/archive/2010/01/31/5274966.aspx
+
+
+
+
+ poj 1033 Defragment
+
+题意：
+磁盘整理，按照从第一个文件到最后一个文件的顺序排放，而且每个文件的碎片按原来的顺序放在一起，要求转移的次数最少。
+解：
+其实根本不用搜索，一开始想搜索想了很久，上网找解题报告也没找到（这么水的一题竟然没有解题报告），于是开始自已想。
+其实碎片的排列只有二种情况：
+1. A0碎片没有放在原来的位置，而它原来的位置正好是空的。而A1碎片也刚好没有放在原来的位置，而b原来的位置之前一直被A0占领，同样还有A2碎片没有在原来位置，而其原来的位置之前一直被A1占领，以此递推直到Ai,没有碎片要放在Ai的位置为止。这种情况称为链。
+2. 基本上同1一样，不过，一开始的时候A0的原来位置并不是空的，而是最后的那个Ai占领着，这种情况称为环。
+解决方法：
+1。对于1，只需要从A0开始一个一个按顺序放到原来的位置上即可。
+2。对于2，只需要从环中的任何一个节点开始，先将这个节点放到从尾部开始数起的空位，然后以链的方式处理，最后再将这个节点的数放回到最后一个节点的位置。
+主要数据结构：
+q[i]:放在第i个位上的数应该放在第q[i]个位上。
+d[i]:应该放在第i个位上的数，现在放在了第d[i]个位上。
+
+
+#include <iostream>
+using namespace std;
+
+int n,k,tmp,t,index,pi;
+int q[10000];
+int d[10000];
+bool optneed;
+
+int main(){
+ optneed=false;
+ memset(q,-1,10000*sizeof(int));
+ memset(d,-1,10000*sizeof(int));
+ scanf("%d%d",&n,&k); 
+ int counter=0;
+ for(int j=0;j<k;j++){
+ scanf("%d",&t);
+ for(int i=0;i<t;i++){
+  scanf("%d",&tmp);
+  tmp--;
+  q[tmp]=counter;
+  d[counter]=tmp;
+  counter++;
+ } 
+ }
+
+ //put nodes whose correct place is empty and solve the chains.
+ for(int i=0;i<n;i++){
+  if(q[i]==i||q[i]==-1) continue;
+  optneed=true;
+  if(q[q[i]]==-1){
+  printf("%d %d\n",i+1,q[i]+1);
+  q[q[i]]=q[i];q[i]=-1;
+  index=i;
+  while(d[index]!=-1){
+  printf("%d %d\n",d[index]+1,index+1);
+  q[d[index]]=-1;q[index]=index;
+  index=d[index];
+  }
+  continue;
+  }
+ }
+ if(optneed==true){
+ //solve the rings
+ for(int i=0;i<n;i++){
+  if(q[i]==i||q[i]==-1) continue;
+  index=i;
+  for(tmp=n-1;tmp>=0;tmp--) if(q[tmp]==-1) break;
+  printf("%d %d\n",i+1,tmp+1);
+  q[tmp]=q[i];q[index]=-1;
+  while(index!=q[tmp]){
+  printf("%d %d\n",d[index]+1,index+1);
+  q[index]=index;q[d[index]]=-1;
+  index=d[index];
+  }
+  printf("%d %d\n",tmp+1,index+1);
+  q[index]=q[tmp];q[tmp]=-1;
+ }
+ }else printf("No optimization needed\n");
+
+
+ return 0;
+}
+
+
+本文来自CSDN博客，转载请标明出处：http://blog.csdn.net/liangxing0728/archive/2009/03/07/3964973.aspx
+
+
+
+
+poj 1129 Channel Allocation(图着色) 
+
+题意：
+    用中继器（repeater）给每个接受者(receiver)发送信号，为了防止信号干扰，两个相邻的广播站之间的中继器要不相同。问至少需要多少个中继器。
+    这个问题相当于给定—个图，如果要求把所有顶点涂上颜色，使得相邻顶点具有不同的颜色，问最少需要几种不同的颜色。经典的图着色问题。
+
+思路：
+   根据给出的点构造邻接矩阵，顶点相邻的位置置1，不同的置0。因为图着色问题颜色最多是四种颜色。所以1种，2种，3种，4种，一个一个试，如果返回回来的着色方案总数不是0说明可行，为用的最少的颜色数。
+ 
+ 
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#define N 27
+int g[N][N], num, n; 
+int x[N];
+
+int ok(int t)
+{
+    int i;
+    for(i = 1; i<=n; i++)
+    {
+        if(i != t)
+        {
+            if(g[t][i] == 1 && x[i] == x[t])
+                return 0;
+        }
+    }
+    return 1;
+}
+
+void traceback(int t, int m)
+{
+    int i;
+    if(t > n)
+    {
+        num++;
+    }
+    else
+    {
+        for(i=1; i<=m; i++)
+        {
+            x[t] = i;
+            if(ok(t))
+                traceback(t+1, m);
+            x[t] = 0;
+        }
+    }
+}
+
+int main()
+{
+    int i, j;
+    char ch;
+    while(scanf("%d", &n) && n)
+    {
+        memset(g, 0, sizeof(g));
+        ch = getchar(); 
+        for(i=1; i<=n; i++)
+        {        
+            ch = getchar(); 
+            ch = getchar(); 
+            while(isalpha(ch = getchar()))   //输入这里要注意
+            {
+                g[i][ch-'A'+1] = 1;
+                g[ch-'A'+1][i] = 1;
+            }
+        }
+        for(j=1; j<=4; j++)
+        {
+            num = 0;
+            traceback(1, j);
+            if(num != 0)
+            {
+                if(num == 1)
+                    printf("1 channel needed.\n");    //还有这里
+                else 
+                    printf("%d channels needed.\n", j);
+                break;
+            }
+        }
+    }
+    return 0;
+}
+
+
+
+POJ 2049 Finding Nemo
+
+题目不复杂，其实就是走迷宫，但是通过题的描述去确定一些参数来描述当前的迷宫是得想想。而且有些细节你也得考虑，你要考虑整个迷宫的形状，要考虑初始的时候可行的迷宫入口，迷宫的入口有时是有门，有些是没门的～～～～下面是我的代码，写得个人觉得是相当冗繁，ANYWAY，总算解决了。
+
+题目的思路是利用广搜，从可行的迷宫入口开始去搜索下一层的新的可行节点。记录已经搜索到的节点的所通过的门数，一搜到Nemo的位置时立马返回该节点的所通过的门数，这时所通过的门数是最少的（这里大家可以思考一下为什么）。
+
+#include <iostream>
+#include <queue>
+#define MAX_N 210 //最大限度边界
+
+using namespace std;
+
+int v[MAX_N + 1][MAX_N + 1];            //v[i][j]表示到格子[i][j]的最小步骤数
+int round[MAX_N + 1][MAX_N + 1][4];     //记录当前格子四面边界的类型, 0:air 1:wall 2:door
+
+int wn, dn, startXI, startYI, minSteps; //wn:墙的数目,dn:门的数目,起始点对应的格子坐标
+double startXF, startYF;                //起始点的输入浮点坐标
+                                        
+int dirarray[4][2] = {{0, 1}, {0, -1}, {-1, 0}, {1, 0}}; //方向数组,走四个方向对坐标的变化
+//上:0, 下:1, 左:2, 右:3
+
+//入bfs队列的元素类型
+struct elem
+{
+    //x, y记录这个格子的坐标; dir记录是从当前格子的哪个方向进入这个格子的,上:0, 下:1, 左:2, 右:3
+    int x, y, dir, stepnum;
+    //stepnum记录到达当前格子所需的步骤数
+};
+
+queue<elem> bfsq; //bfs的队列
+
+//取当前方向的对面方向
+void changeDir(int orgignal, int &newDir)
+{
+    if(orgignal == 0) newDir = 1;
+    else if(orgignal == 1) newDir = 1;
+    else if(orgignal == 2) newDir = 3;
+    else newDir = 2;
+}
+
+//当断当前坐标是否在合法范围内
+bool inRange(int x, int y)
+{
+    return x >= 0 && x <= 205 && y >= 0 && y <= 205;
+}
+
+void bfs()
+{
+    //将Demo的位置入队列作为bfs的起始位置
+    while(!bfsq.empty()) bfsq.pop();
+    elem curelem, newelem;
+    curelem.x = startXI; curelem.y = startYI; curelem.dir = -1; curelem.stepnum = 0;
+    v[startXI][startYI] = 0;
+    bfsq.push(curelem);
+
+    int curx, cury, curdir, cursteps, newx, newy, newdir, newsteps, d;
+    while(!bfsq.empty())
+    {
+        curelem = bfsq.front();
+        bfsq.pop();
+        
+        curx = curelem.x; cury = curelem.y; curdir = curelem.dir; cursteps = curelem.stepnum;
+
+        //到达出发点
+        if(curx == 0 && cury == 0)
+        {
+            //更新所需位置的最优值
+            if(cursteps < minSteps)
+                minSteps = cursteps;
+            continue;    
+        }
+
+        //遍历当前格子的四个方向,尝试往这四个方向走
+        for(d = 0; d < 4; d++)
+        {
+            //不能往回走
+            if(d != curdir)
+            {
+                //所走方向不能是墙
+                if(round[curx][cury][d] != 1)
+                {
+                    //得到新的格子坐标
+                    newx = curx + dirarray[d][0];
+                    newy = cury + dirarray[d][1];
+                    
+                    //新坐标在合法范围内
+                    if(inRange(newx, newy))
+                    {
+                        //计算所有方向相对目标格子所在的方位
+                        changeDir(d, newdir);
+
+                        //门,步骤数+1
+                        if(round[curx][cury][d] == 2)
+                            newsteps = cursteps + 1;
+                        else //空气,步骤数不变
+                            newsteps = cursteps;
+
+                        //判断这个新格子的新状态是否需要入队列
+                        if((v[newx][newy] == 0xbf || newsteps < v[newx][newy]) && newsteps < minSteps)
+                        {
+                            v[newx][newy] = newsteps;
+                            newelem.x = newx; newelem.y = newy; newelem.stepnum = newsteps; newelem.dir = newdir;
+                            bfsq.push(newelem);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+int main()
+{
+    int i, j, x, y, d, t;
+    while(scanf("%d%d", &wn, &dn) && !(wn == -1 && dn == -1))
+    {
+        minSteps = INT_MAX;
+        memset(v, 12, sizeof(v));
+        memset(round, 0, sizeof(round));
+        for(i = 1; i <= wn; i++)
+        {
+            scanf("%d%d%d%d", &x, &y, &d, &t);
+            //输入的预处理,将线段(墙)转换为相应格子对应的四面边界
+            if(d == 1)
+                for(j = y + 1; j <= y + t; j++)
+                    round[x][j][2] = round[x - 1][j][3] = 1;
+            else
+                for(j = x; j < x + t; j++)
+                    round[j][y][0] = round[j][y + 1][1] = 1;
+        }
+        for(i = 1; i <= dn; i++)
+        {
+            scanf("%d%d%d", &x, &y, &d);
+            //输入的预处理,将线段(门)转换为相应格子的四面边界方向
+            if(d == 1)
+                round[x][y + 1][2] = round[x - 1][y + 1][3] = 2;
+            else
+                round[x][y][0] = round[x][y + 1][1] = 2;
+        }
+        scanf("%lf%lf", &startXF, &startYF);
+        //将Demo的位置转换为格子坐标
+        startXI = startXF;
+        startYI = startYF + 1;
+
+        //题目中的异常数据
+        if(startXI < 0 || startXI > 199 || startYI < 0 || startYI > 199)
+            printf("0\n");
+        else
+        {
+            bfs();
+            if(minSteps == INT_MAX) printf("-1\n");
+            else printf("%d\n", minSteps);
+        }
+    }
+    return 0;
+}
+
+
+
+
+POJ 2056 The Separator in Grid
+
+这道题我曾经是想过深搜的，就一条线路一条线路的搜，不过后来，事实证明，所需的时间很多，老是TLE，弄得我都烦了，后来实在没办法之下，重新考虑题意。
+
+其实对于i层的点来说，它只需知道i-1层的哪些点可以作为起始点和到达这些点所需的最小的sep(short for separator),这样算法的效率就跟层数相关，也跟每一层寻找起始点的操作相关，应该是O(M×N),而n<200,所以算法的效率是有保障的。
+
+
+广搜
+
+#include <stdio.h>
+#include <memory.h>
+struct Node
+{
+int x;
+int y;
+};
+
+int chessBox[ 200 ][ 200 ];               //标记每一点是'M','S'还是'B'
+int step[ 200 ][ 200 ];                       //标记每一点到达时的最小步数
+Node status[ 200*200 ];                    //标记哪些节点是可继续展开（也就是可以形成separator的点）的节点
+
+int M,N;
+int last;
+
+void FindNext( Node curStatus )        //从curStatus去寻找下面的可用节点
+{
+int curStep = step[ curStatus.x ][ curStatus.y ];
+int m = curStatus.x+1;
+int n = curStatus.y;
+if ( m == N-1 )                                   //如果是已经来到了倒数第二层，由于最后一层肯定只有一个separator的节点。如果它有两个或以上，可能证明其中一个删去后它仍是一个sep.这样对于每个可用节点，我们直接考虑它是否可以直接向下一步形成seq.
+{
+   if ( chessBox[ m ][ n ])
+   {
+    int tempStep = curStep+1;
+    step[ m ][ n ] = tempStep;
+   }
+}
+
+else
+
+{
+while( chessBox[ m ][ n ] == 2 )         //如果不是倒数第二层，就向左展开可用节点 可用的节点满足：它的正下方有节点存在，如果这个节点是可继续延展的节点。
+
+{
+   if ( chessBox[ m+1 ][ n ] == 2 )
+   {
+    int tempStep = curStep + curStatus.y - n +1;
+
+//更新到达该节点的最小需要的Sep数
+    if ( step[ m ][ n ] == 0)                  
+    {
+     step[ m ][ n ] = tempStep;
+     (status[ last ]).x = m;
+     (status[ last ]).y = n;
+     ++last;
+    }
+    else
+    {
+     if( step[ m ][ n ] > tempStep )
+     {
+      step[ m ][ n ] = tempStep;
+     }
+    }
+   }
+   --n;
+}
+n = curStatus.y+1;
+
+//向右展开节点并更新
+while ( chessBox[ m ][ n ] == 2 )
+{
+   if ( chessBox[ m+1 ][ n ] == 2 )
+   {
+    int tempStep = curStep+ n - curStatus.y+1;
+    if ( step[ m ][ n ] == 0)
+    {
+     step[ m ][ n ] = tempStep;
+     (status[ last ]).x = m;
+     (status[ last ]).y = n;
+     ++last;
+    }
+    else
+    {
+     if( step[ m ][ n ] > tempStep )
+     {
+      step[ m ][ n ] = tempStep;
+     }
+    }
+   }
+   ++n;
+}
+
+}
+}
+
+int main()
+{
+while ( true )
+{
+   int origin = 0;
+   scanf("%d %d", &N, &M );
+   if ( M==0 || N==0 )
+   {
+    break;
+   }
+   char temp[ 250 ];
+   memset( chessBox,0, sizeof(chessBox ));
+   memset( step,0, sizeof(step));
+   int i,j;
+   gets( temp );
+   for ( i = 0; i < N; ++i )
+   {
+   
+    gets( temp );
+    bool define = false;
+    for ( j = 0; j < M; ++j )
+    {
+     switch ( temp[j] )
+     {
+     case 'W':
+      chessBox[ i ][ j ] = 1;
+      break;
+     case 'S':
+      chessBox[ i ][ j ] = 2;
+      ++origin;
+      break;
+     case 'B':
+      chessBox[ i ][ j ] = 3;
+      break;
+     }
+
+    //将可能变成'S'的'B'变成'S'，说明它是可用节点。
+     if ( chessBox[ i ][ j ] == 3 && chessBox[ i ][ j - 1 ] == 2 && !define)
+     {
+      chessBox[ i ][ j ] = 2;
+      define = true;
+     }
+    }
+   }
+
+    //寻找第一行的可用节点
+   int start;
+   for ( i = 0 ; i < M; ++i )
+   {
+    if ( chessBox[ 0 ][ i ] == 2 )
+    {
+     start = i;
+     break;
+    }
+   }
+   int s_num = 1;
+// g_min_num = origin;
+// int min_num = s_num+FindMinSeparator( 0, i,s_num);                //在顶部肯定只有一个顶点，如果不是它就不是一minimal separator
+   int first = 0;
+   last = 0;
+   (status[ last ]).x = 0; 
+   (status[ last ]).y = start; 
+   step[ (status[ last ]).x ][ (status[ last ]).y ] = 1;
+   ++last;
+   if ( start+1 < M-1 )
+   { 
+    (status[ last ]).x = 0; 
+    (status[ last ]).y = start+1;
+    step[ (status[ last ]).x ][ (status[ last ]).y ] = 1;
+    ++last;
+   }
+
+   Node tempNode;
+   while ( first < last )
+   {
+    tempNode = status[ first ];
+    ++first;
+    FindNext( tempNode ); 
+   }
+   int minStep = 1000000;
+
+//寻找在最后一行的最小Seq数。
+   for ( i = 0; i < M; ++i )
+   {
+    if ( minStep > step[ N-1 ][ i ] && step[ N-1 ][ i ] != 0 )
+    {
+     minStep = step[ N-1 ][ i ];
+    }
+   
+   }
+   printf("%d\n", minStep );
+}
+return 0;
+}
+
+
+
+poj 2488 A Knight's Journey(DFS) 
+
+题目大意：给出一个国际棋盘的大小，判断马能否不重复的走过所有格，并记录下其中按字典序排列的第一种路径。
+
+"马的遍历"是一道经典回溯题，当然还是DFS...这题有3个要密切注意的地方：
+
+1、题目要求以"lexicographically"方式输出，也就是字典序...一开始没看懂这个词结果WA了N次...要以字典序输出路径，那么方向数组就要以特殊的顺序排列了...
+   这样只要每次从dfs(1,1)开始搜索，第一个成功遍历的路径一定是以字典序排列...
+
+2、国际象棋的棋盘，横行为字母，表示横行坐标的是y；纵行为数字，表示纵行的坐标是x...一开始又搞反了...
+
+3、虽然题目没说，但是这道题最后一组数据后是没有空行的...否则会PE...
+
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+int const MAX=27;
+int oper[8][2] = {{-2, -1}, {-2, 1}, {-1, -2}, {-1, 2},{1, -2}, {1, 2}, {2, -1}, {2, 1}};//操作步骤，很讲究的!
+int map[MAX][MAX];//记录点是否走过
+int cx[MAX], cy[MAX];
+int step;//走的总步数
+int p,q;//棋盘规格
+int sign;//结束标志
+
+void Dfs(int i,int j)
+{
+      int m,x,y;
+      if (sign)//如果已经遍历完毕，结束程序
+      {
+            return;
+      }
+      step++;
+      cx[step]=i;
+      cy[step]=j;
+      if (step==p*q)//最后一步,结束程序
+      {
+            sign=1;
+            return;
+      }
+      map[i][j]=1;
+      for (m=0;m<8;m++)
+      {
+            x=i+oper[m][1];
+            y=j+oper[m][0];
+            if (map[x][y]==0 && x>0 && x<=p && y>0 && y<=q)
+            {   
+                  Dfs(x,y);
+                  step--;
+            }
+      }
+      map[i][j]=0;
+}
+
+int main()
+{
+      int sum;
+      cin>>sum;
+      for (int j=1;j<=sum;j++)
+      {
+            step=0;
+            sign=0;
+            cin>>p>>q;
+            memset(map,0,sizeof(map));
+            printf("Scenario #%d:\n", j);
+            Dfs(1,1);//从(1,1)出发,从任意一点出发如果impossible了，那就impossible了
+            if (sign)
+            {
+                  for (int i = 1; i <= p * q; i++)
+                  {
+                         printf("%c%d", cy[i] + 64, cx[i]);
+                  }
+                  cout<<endl;
+            }
+            else
+            {
+                  printf("impossible\n");
+            }
+            if (sum != j) printf("\n");
+      }
+	  return 0;
+}
+
+ 
+
+
+
+poj 2492 A Bug's Life
+
+
+虽然没看这个题目之前已经知道是并查集，但真正还是让我头痛一阵，题目等价为，n个点，m条边,能否仅用两种颜色染完所有点，并使每条边的两个点不同色。
+      先把n个顶点看成n个集合，若两个元素所在的集合不同，合并他们的根(把并查集看成一棵树)，因为每条边的两个点不同色，若两个顶点所在各自树的深度之差为偶数，直接把其中一个根接到另一个上，否则接到另一个根的任一孩子结点上；
+      若两个元素所在集合相同，深度之差为偶数，就可以判为不能仅用两种颜色染完所有点。
+
+代码如下：
+#include <iostream>
+using namespace std ;
+
+const int MAX = 3000 ;
+
+int height[MAX] , set[MAX] ;
+
+int Find (int x , int &h , int &c)//h纪录的是该结点的深度，c记录的是根结点的一个孩子结点
+{
+    c = -1 ;
+    h = 1 ;
+    while (set[x] != x)
+    {
+        h ++ ;
+        c = x ;
+        x = set[x] ;
+    }
+    return x ;
+}
+
+int Merge (int x , int y)
+{
+    int a , b , h1 , h2 , c1 , c2 ;
+    a = Find (x , h1 , c1) ;
+    b = Find (y , h2 , c2) ;
+    if (a == b)//同属一个集合
+    {
+        if ((h1 - h2) % 2)
+            return 1 ;
+        else//如果为奇数，结果为不能
+            return 0 ;
+    }
+    else
+    {
+        if ((h1 - h2) % 2 == 0)//深度之差为偶数，直接把其中一个根接到另一个上
+        {
+            if (height[a] == height[b])
+            {
+                set[a] = b ;
+                height[b] ++ ;
+            }
+            else if (height[a] < height[b])
+                set[a] = b ;
+            else
+                set[b] = a ;
+        }
+        else//否则接到另一个根的一个孩子结点上
+        {
+            if (height[a] < height[b])
+            {
+                set[a] = c2 ;
+                height[b] = height[a] + 2 > height[b] ? height[a] + 2 : height[b] ;
+            }
+            else
+            {
+                set[b] = c1 ;
+                height[a] = height[b] + 2 > height[a] ? height[b] + 2 : height[a] ;
+            }
+        }
+    }
+    return 1 ;
+}
+
+int main ()
+{
+    int nCases , i , j , x , y , flag , n , m ;
+    scanf ("%d" , &nCases) ;
+    for (i = 1 ; i <= nCases ; i ++)
+    {
+        if (i != 1)
+            putchar ('\n') ;
+        scanf ("%d%d" , &n , &m) ;
+        for (flag = 1 , j = 0 ; j <= n ; j ++)
+        {
+            set[j] = j ;
+            height[j] = 1 ;
+        }
+        while (m --)
+        {
+            scanf ("%d%d" , &x , &y) ;
+            if (flag)
+                flag = Merge (x , y) ;
+        }
+        if (flag)
+            printf ("Scenario #%d:\nNo suspicious bugs found!\n" , i) ;
+        else
+            printf ("Scenario #%d:\nSuspicious bugs found!\n" , i) ;
+    }
+    return 0 ;
+} 
+
+
+
+

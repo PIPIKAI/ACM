@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1538095332 source:d:\源代码\c++课\有元\pointset.cpp
+	<bits/stdc++.h>
+	"pointhead.h"
+
+1538097005 d:\源代码\c++课\有元\pointhead.h
+
+1538095702 source:d:\源代码\c++课\有元\main.cpp
+	<bits/stdc++.h>
+	"pointhead.h"
+

@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1524576686 source:c:\users\zzk\desktop\源代码\code\lcs\main.cpp
+	<iostream>
+	<cstring>
+
+1524575300 source:c:\users\zzk\desktop\源代码\code\lcs\lcs..cpp
+	<iostream>
+	<cstring>
+

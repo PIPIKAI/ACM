@@ -1,0 +1,783 @@
+ POJ 1113 WALL 
+
+计算几何，求凸包  
+这题的结果等于这个多边形构成的凸包的周长加上以所给半径为半径的圆的周长  
+步骤如下：  
+1)算法首先寻找最最靠下方的点，如果遇到y坐标相同，则寻找x坐标最小的点firstP  
+2)然后根据所有点相对于firstP的偏角的大小进行排序，遇到偏角相等的，只取距离  
+firstP最远的点(排序利用自己手写的快排)  
+3)然后利用Graham算法求凸包  
+4)最后直接求职  
+
+
+#include <iostream>   
+#include <cmath>   
+#define PI 3.1415926   
+#define MAX_N 1000   
+using namespace std;   
+//存储原始输入的坐标值，rad是输入的半径   
+double cord[MAX_N + 2][2], rad;   
+int seq[MAX_N + 2];   
+int stack[MAX_N + 2];   
+int n, top;   
+int firstP;   
+int realN;   
+void swap(int pos1, int pos2)   
+{   
+    int temp = seq[pos1];   
+    seq[pos1] = seq[pos2];   
+    seq[pos2] = temp;   
+}   
+int dir(int nodes, int node1, int node2)   
+{   
+    double x1 = cord[node1][0], y1 = cord[node1][1];   
+    double x2 = cord[node2][0], y2 = cord[node2][1];   
+    double sx = cord[nodes][0], sy = cord[nodes][1];   
+    return (x2 - sx) * (y1 - sy) - (x1 - sx) * (y2 - sy);   
+}    
+double getDist(int node1, int node2)   
+{   
+    double x1 = cord[node1][0], y1 = cord[node1][1];   
+    double x2 = cord[node2][0], y2 = cord[node2][1];   
+       
+    double res = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));   
+    return res;   
+}   
+int compare(int node1, int node2)   
+{   
+    double x1 = cord[node1][0], y1 = cord[node1][1];   
+    double x2 = cord[node2][0], y2 = cord[node2][1];   
+    double sx = cord[firstP][0], sy = cord[firstP][1];   
+    double type = dir(firstP, node1, node2);   
+    if(type == 0)   
+    {   
+           
+        double dist1 = (x1 - sx) * (x1 - sx) + (y1 - sy) * (y1 - sy);   
+        double dist2 = (x2 - sx) * (x2 - sx) + (y2 - sy) * (y2 - sy);   
+        if(dist1 > dist2)   
+            return -2;   
+        else if(dist1 == dist2)   
+            return 0;   
+        else    
+            return 2;   
+    }   
+    else if(type > 0)   
+        return 1;   
+    else  
+        return -1;   
+}   
+void fastSort(int start, int end)   
+{   
+    if(start < end)   
+    {   
+        int curPos = start;   
+        int posS = start, posE = end + 1;   
+        while(true)   
+        {   
+            while(compare(seq[++posS], seq[curPos]) < 0 && posS < end);   
+            while(compare(seq[--posE], seq[curPos]) > 0 && posE > start);   
+            if(posS < posE)   
+                swap(posS, posE);   
+            else  
+                break;   
+        }   
+        swap(curPos, posE);   
+        fastSort(start, posE - 1);   
+        fastSort(posE + 1, end);   
+    }   
+}   
+void sortSeq()   
+{   
+    int i, s = 0;   
+    for(i = 1; i <= n; i++)   
+    {   
+        //最低最左点不参加排序   
+        if(i == firstP)   
+            continue;   
+        seq[++s] = i;   
+    }   
+    realN = n - 1;   
+    fastSort(1, realN);   
+    //清理夹角相同但是距离不同的点，只取举例firstP最远的点   
+    i = 1;   
+    while(i < realN)   
+    {   
+        s = i + 1;   
+        //equal angle but smaller distance   
+        while(s <= realN && compare(seq[i], seq[s]) == -2)   
+        {   
+            seq[s] = -1; //置为无效   
+            s++;   
+        }   
+        i = s;   
+    }   
+}   
+//寻找凸包   
+void findQ()   
+{   
+    int nodes, node1, node2, type;   
+    top = 0;   
+    stack[top++] = firstP;   
+    int s = 1;   
+    int c = 0;   
+    while(c < 2)   
+    {   
+        if(seq[s] != -1)   
+        {   
+            c++;   
+            stack[top++] = seq[s];    
+        }   
+        s++;   
+    }   
+    for(; s <= realN; s++)   
+    {   
+        if(seq[s] == -1)   
+            continue;   
+        while(true)   
+        {   
+            nodes = stack[top - 2];   
+            node1 = stack[top - 1];   
+            node2 = seq[s];   
+            type = dir(nodes, node1, node2);   
+            if(type >= 0)   
+                top--;   
+            else  
+                break;   
+        }   
+        stack[top++] = seq[s];   
+    }   
+}   
+double getRes()   
+{   
+    double totalDist = 0;   
+    int lastNode = firstP;   
+    int curNode;   
+    while(top > 0)   
+    {   
+        curNode = stack[--top];   
+        totalDist += getDist(lastNode, curNode);   
+        lastNode = curNode;   
+    }   
+    //totalDist += getDist(lastNode, firstP);   
+    totalDist += 2 * PI * rad;   
+    return totalDist;   
+}   
+int main()   
+{   
+    int i;   
+    cin>>n>>rad;   
+    int minX = INT_MAX, minY = INT_MAX;   
+    for(i = 1; i <= n; i++)   
+    {   
+        cin>>cord[i][0]>>cord[i][1];   
+        if((cord[i][1] < minY) || (cord[i][1] == minY && cord[i][0] < minX))   
+        {   
+            firstP = i;   
+            minX = cord[i][0];   
+            minY = cord[i][1];   
+        }   
+    }   
+    sortSeq();   
+    findQ();   
+    double res = getRes();   
+    printf("%.0f\n", res);   
+    return 0;   
+}  
+
+
+
+POJ1292 Will Indiana Jones Get There?
+
+题目大意：英雄Jones现在在位置1，有人在位置2呼救，所以他要过去救他，但是有个条件，他必须在墙上走，其实就是说他只能在图示的线段上走，但是线段间有空隙，所以要用一个长板搭在线段间才能从一个线段到另外一个线段，问怎么找到一个路径使得要使用的长板最小。
+
+题目一眼看下去还比较复杂，毕竟你看到是一堆线段，但是这时候一个很直观的思想就是枚举两个线段间的距离，将每个线段都看成是一个节点，这样其实就化为了一个简单的有向图，这时要寻找最短的长板其实最小生成树的问题，利用Prim算法就可以解决，本题的难处就在于计算线段间的距离跟最小生成树的实现。计算线段间距离写得很乱，大家包容。
+
+
+#include <math.h>
+#include <memory.h>
+#include <stdio.h>
+float horDist( int x1, int y1, int L1, int x2, int y2, int L2 )
+{
+if ( x2 > x1 )
+{
+   if ( x2 > x1+L1 )
+   {
+    return sqrt((float)((x2 - x1-L1)*(x2 - x1-L1)+(y2 - y1)*(y2 - y1)));
+   }
+   else
+   {
+    return abs( y2 - y1 );
+   }
+}
+else
+{
+   if ( x1 > x2 + L2)
+   {
+    return sqrt((float)((x1 - x2-L2)*(x1 - x2-L2)+(y2 - y1)*(y2 - y1)));
+   }
+   else
+   {
+    return abs( y2 - y1 );
+   }
+}
+}
+float verDist( int x1, int y1, int L1, int x2, int y2, int L2 )
+{
+return horDist( y1, x1, -L1, y2, x2, -L2 );
+}
+float hor2verDist( int x1, int y1, int L1, int x2, int y2, int L2 )
+{
+int xHor, yHor,LHor, xVer, yVer, LVer;
+if ( L1 > 0 )
+{
+   xHor = x1;
+   yHor = y1;
+   LHor = L1;
+   xVer = x2;
+   yVer = y2;
+   LVer = -L2;
+}
+else
+{
+   xHor = x2;
+   yHor = y2;
+   LHor = L2;
+   xVer = x1;
+   yVer = y1;
+   LVer = -L1;
+}
+
+if ( yVer <= yHor && yHor <= (yVer+LVer) )
+{
+   if ( xHor <= xVer && xVer<= (xHor+LHor) )
+   {
+    return 0.0;
+   }
+   else
+   {
+    if ( xVer > (xHor+LHor) )
+    {
+     return xVer - xHor- LHor;
+    }
+    else
+    {
+     return xHor - xVer;
+    }
+   }
+}
+else 
+{
+   if ( xHor <= xVer && xVer<= (xHor + LHor) )
+   {
+    if ( yHor > (yVer+ LVer) )
+    {
+     return yHor - yVer - LVer;
+    }
+    else
+    {
+     return yVer - yHor;
+    }
+   }
+   else
+   {
+    if ( xVer > (xHor+LHor) )
+    {
+     if ( yHor > (yVer+ LVer) )
+     {
+      return sqrt((float)(pow((float)(yHor - yVer - LVer),2)+pow((float)(xVer - xHor - LHor), 2 )));
+     }
+     else
+     {
+      return sqrt((float)(pow((float)(yHor - yVer) ,2)+pow( (float)(xVer - xHor - LHor), 2 )));
+     }
+    }
+    else
+    {
+     if ( yHor > (yVer+ LVer) )
+     {
+      return sqrt((float)(pow((float)(yHor - yVer - LVer),2)+pow( (float)(xVer - xHor) , 2 )));
+     }
+     else
+     {
+      return sqrt((float)(pow((float)(yHor - yVer) ,2)+pow( (float)(xVer - xHor), 2 )));
+     }
+    }
+   }
+}
+}
+template<class T >
+T MinFloat( const T &a, const T&b )
+{
+return (a<b)?a:b;
+};
+float dist( int x1, int y1, int L1, int x2, int y2, int L2 )
+{
+if ( L1 == 0 )
+{
+   if ( L2 == 0 )
+   {
+    return sqrt((float)(pow((float)(x1-x2),2)+pow((float)(y1-y2),2)));
+   }
+   else if ( L2 < 0 )
+   {
+    int yTemp = 0;
+    int xTemp = 0;
+    yTemp = y2-L2;
+    xTemp = x2;
+    if ( y2 <= y1 && y1 <= yTemp )
+    {
+     return abs( x1-x2 );
+    }
+    else
+    {
+     return MinFloat(sqrt((float)(pow((float)(x1-x2),2)+pow((float)(y1-y2),2))), sqrt((float)(pow((float)(x1-xTemp),2)+pow((float)(y1-yTemp),2))));
+    }
+   }
+   else
+   {
+    int yTemp = 0;
+    int xTemp = 0;
+    yTemp = y2;
+    xTemp = x2+L2;
+    if ( x2 <= x1 && x1 <= xTemp )
+    {
+     return abs( y1-y2 );
+    }
+    else
+    {
+     return MinFloat(sqrt((float)(pow((float)(x1-x2),2)+pow((float)(y1-y2),2))), sqrt((float)(pow((float)(x1-xTemp),2)+pow((float)(y1-yTemp),2))));
+    }
+   }
+}
+if ( L2 == 0 )
+{
+   if ( L1== 0 )
+   {
+    return sqrt((float)(pow((float)(x1-x2),2)+pow((float)(y1-y2),2)));
+   }
+   else if ( L1 < 0 )
+   {
+    int yTemp = 0;
+    int xTemp = 0;
+    yTemp = y1-L1;
+    xTemp = x1;
+    if ( y1 <= y2 && y2 <= yTemp )
+    {
+     return abs( x1-x2 );
+    }
+    else
+    {
+     return MinFloat(sqrt((float)(pow((float)(x1-x2),2)+pow((float)(y1-y2),2))), sqrt((float)(pow((float)(x2-xTemp),2)+pow((float)(y2-yTemp),2))));
+    }
+   }
+   else
+   {
+    int yTemp = 0;
+    int xTemp = 0;
+    yTemp = y1;
+    xTemp = x1+L1;
+    if ( x1 <= x2 && x2 <= xTemp )
+    {
+     return abs( y1-y2 );
+    }
+    else
+    {
+     return MinFloat(sqrt((float)(pow((float)(x1-x2),2)+pow((float)(y1-y2),2))), sqrt((float)(pow((float)(x2-xTemp),2)+pow((float)(y2-yTemp),2))));
+    }
+   }
+}
+if ( L1*L2 > 0 )
+{
+   if ( L1 > 0 )
+   {
+    return horDist( x1, y1, L1, x2, y2, L2 );
+   }
+   else
+   {
+    return verDist( x1, y1, L1, x2, y2, L2 );
+   }
+}
+else
+{
+   return hor2verDist( x1, y1, L1, x2, y2, L2 );
+}
+}
+const int MaxValue = 1005;
+const float MAXFLOAT = 10000000000.0;
+float DistArray[MaxValue ][ MaxValue ];
+struct WALL 
+{
+int x;
+int y;
+int length;
+};
+WALL walls[ MaxValue ];
+struct PointInfo
+{
+int parent;
+float path;
+bool goon;
+bool complete;
+};
+PointInfo info[ MaxValue ];
+float Prim( int N )
+{
+int i;
+while ( true )
+{
+   float minValue = MAXFLOAT;
+   int minIndex = -1;
+   for ( i = 0; i < N; ++i )
+   {
+    if ( info[ i ].goon && !info[ i ].complete )
+    {
+     if ( info[i].path < minValue )
+     {
+      minValue = info[ i ].path;
+      minIndex = i;
+     }
+    } 
+   }
+   info[ minIndex ].complete = true;
+   if ( minIndex == 1)
+   {
+    break;
+   }
+   for ( i = 0; i < N; ++i )
+   {
+    if ( !info[ i ].complete && i != minIndex )
+    {
+     info[ i ].goon = true;
+     if (DistArray[ minIndex ][ i ] < info[ i ].path )
+     {
+      info[ i ].path = DistArray[ minIndex ][ i ];
+      info[ i ].parent = minIndex;
+     }
+    }
+   }
+}
+float length = 0.0;
+i = 1;
+while( info[ i ].parent != -1 )
+{
+   float temp = DistArray[ info[i].parent ][ i ];
+   if ( length < temp )
+   {
+    length = temp;
+   }
+   i = info[ i ].parent;
+}
+return length;
+
+}
+int main()
+{
+
+while( true )
+{
+   int N;
+   int i;
+   int j;
+   scanf("%d", &N );
+   if ( N == 0 )
+   {
+    break;
+   }
+   for ( i = 0; i < N; ++i )
+   {
+    scanf("%d %d %d", &walls[ i ].x,&walls[ i ].y,&walls[ i ].length);
+   }
+   memset( DistArray, 0, sizeof(DistArray) );
+   for ( i = 0; i < N; ++i )
+   {
+    for ( j = i+1; j < N; ++j )
+    {
+     DistArray[ i ][ j ] = dist( walls[ i ].x, walls[ i ].y, walls[ i ].length, walls[ j ].x, walls[ j ].y, walls[ j ].length );
+     DistArray[ j ][ i ] = DistArray[ i ][ j ];
+    }
+   }
+   for ( i = 1; i < N; ++i )
+   {
+    info[ i ].path = MAXFLOAT;
+    info[ i ].goon = false;
+    info[ i ].complete = false;
+    info[ i ].parent = 0;
+   }
+   info[ 0 ].path = 0;
+   info[ 0 ].goon = true;
+   info[ 0 ].complete = false;
+   info[ 0 ].parent = -1;
+   float length = Prim( N );
+   printf("%.2f\n", length );
+
+}
+return 0;
+}
+
+
+
+
+poj2148——Color the Map——线段部分重合
+
+本题如果把图建完了，其实就是枚举总颜色数后dfs即可。
+所以本题的关键就是建图啦。而建图重要的是解决Two countries are considered to be "adjacent" if any of their territories share a border of non-zero 
+
+length.亦即解决两条线段部分重合的问题。
+解决部分重合的代码如下：
+int cross(const int &ax,const int &ay,const int &bx,const int &by)
+{
+   return ax*by-bx*ay;
+}
+
+int dot(const int &ax,const int &ay,const int &bx,const int &by)
+{
+   return ax*bx+ay*by;
+}
+
+bool covered(const int &pax,const int &pay,const int &pbx,const int &pby,const int &qax,const int &qay,const int &qbx,const int &qby)
+{
+   if (cross(pax-pbx,pay-pby,qax-qbx,qay-qby)!=0) return 0;
+   if (pax==qax&&pay==qay&&pbx==qbx&&pby==qby) 
+   {
+       //printf("#1\n");
+       return 1;
+   }
+   if (pax==qbx&&pay==qby&&pbx==qax&&pby==qay) 
+   {
+       //printf("#2\n");
+       return 1;
+   }
+   if (cross(pax-qax,pay-qay,pax-qbx,pay-qby)==0&&dot(pax-qax,pay-qay,pax-qbx,pay-qby)<0) 
+   {
+       //printf("#3\n");
+       return 1;
+   }
+   if (cross(pbx-qax,pby-qay,pbx-qbx,pby-qby)==0&&dot(pbx-qax,pby-qay,pbx-qbx,pby-qby)<0) 
+   {
+       //printf("#4\n");
+       return 1;
+   }
+   if (cross(qax-pax,qay-pay,qax-pbx,qay-pby)==0&&dot(qax-pax,qay-pay,qax-pbx,qay-pby)<0) 
+   {
+       //printf("#3\n");
+       return 1;
+   }
+   if (cross(qbx-pax,qby-pay,qbx-pbx,qby-pby)==0&&dot(qbx-pax,qby-pay,qbx-pbx,qby-pby)<0) 
+   {
+       //printf("#4\n");
+       return 1;
+   }
+   return 0;
+}
+
+
+
+POJ 2653 Pick-up sticks 
+
+题目大意：给定一堆筷子，依次往下抛，给定筷子的两断点坐标，求哪些筷子在最上面（即那些筷子上面没有其他筷子压着）
+
+思路：判断线段相交，用叉积。
+
+设p=(x1,y1),q=(x2,y2),则pXq=x1*y2-x2*y1,若pXq为正数，则对于原点来说，p在q的顺时针方向上；若pXq为负数，则p在q的逆时针方向上。对于有公共断点的三条线段来说，设该三条线段的向量分别为p1,p2,p3,假设p2在p1的逆时针方向上，p3在p1的顺时针方向上，那么(p2Xp1)*(p3Xp1)必定小于0。
+
+#include<stdio.h>
+#include<stdlib.h>
+#define EPS 1e-9
+struct point
+{
+    double x,y;
+};
+struct Line
+{
+    point p1,p2;
+};
+Line line[100002];
+double MAX(double a,double b)
+{
+    return a>b?a:b;
+}
+double MIN(double a,double b)
+{
+    return a>b?b:a;
+}
+double mulit(point p0,point p1,point p2)
+{
+    return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+int cross(Line a,Line b) //判断两线段是否相交
+
+{
+    if(MAX(a.p1.x,a.p2.x)>MIN(b.p1.x,b.p2.x)&&
+     MAX(b.p1.x,b.p2.x)>MIN(a.p1.x,a.p2.x)&&
+     MAX(a.p1.y,a.p2.y)>MIN(b.p1.y,b.p2.y)&&
+     MAX(b.p1.y,b.p2.y)>MIN(a.p1.y,a.p2.y)&&
+     mulit(a.p1,a.p2,b.p1)*mulit(a.p1,a.p2,b.p2)<EPS&&
+     mulit(b.p1,b.p2,a.p1)*mulit(b.p1,b.p2,a.p2)<EPS)
+        return 1;
+    return 0;
+}
+int main(void)
+{
+    int n,i,j;
+    while(1)
+    {
+        scanf("%d",&n);
+        if(n==0)break;
+        for(i=1;i<=n;i++)
+        {
+            scanf("%lf %lf %lf %lf",&line[i].p1.x,&line[i].p1.y,&line[i].p2.x,&line[i].p2.y);
+        }
+        printf("Top sticks:");
+        for(i=1;i<=n-1;i++)
+        {
+            for(j=i+1;j<=n;j++)
+            {
+                if(cross(line[i],line[j]))
+                    break;
+                if(j==n) //若没有其他筷子与其相交，则该筷子是最上面筷子之一
+
+                    printf(" %d,",i);
+            }
+        }
+        printf(" %d.\n",n);
+    }
+    return 0;
+}
+
+
+
+POJ 1584 —— A Round Peg in a Ground Hole
+
+给你一个多边形的N个顶点坐标，然后再给一个钉子，给定钉子的半径和圆心坐标，首先判断多边形是否为凸多边形，若为凸多边形，再判断钉子是否可以放到凸多边形内部。
+1.判断是否为凸边变形，第一步将顶点逆时针排列，再根据 pipj 应在pi-1pi 的逆时针方向，若存在 pipj 在pi-1pj 的顺时针方向，则该多边形为凹多边形。
+2.判断圆(钉子)是否在多边形内部，第一步判断圆心是否在凸多边形内部，第二步再判断圆心到某一边的最短距离，若存在某最短距离大于圆心，则圆不能放在凸多边内。
+
+
+#include <stdio.h>
+#include <math.h>
+ 
+#define eps 1e-8
+ 
+struct point
+{
+    double x, y;
+    point operator-(point p)
+    {
+        point res;
+        res.x = x - p.x;
+        res.y = y - p.y;
+        return res;
+    }
+};
+struct circle 
+{
+    point c;
+    double r;
+};
+double dis(point p1, point p2)
+{
+    point p3 = p2 - p1;
+    return sqrt(p3.x * p3.x + p3.y * p3.y);
+}
+double multi(point p1, point p2)
+{
+    return p1.x * p2.y - p1.y * p2.x;    
+}
+void ChangeDir(point p[], int n)
+{
+    point tmp;
+    for(int i = 0;i < n / 2;i++)
+    {
+        tmp = p[i];
+        p[i] = p[n - i - 1];
+        p[n - i - 1] = tmp;
+    }
+}
+double AreaOfPloy(point p[], int n)
+{
+    double area = 0.0;
+    for(int i = 0;i < n;i++)
+        area += multi(p[i], p[i + 1]);
+    return area / 2;
+}
+double AreaOfThree(point p1, point p2, point p3)
+{
+    return fabs(multi(p2 - p1, p3 - p1)) / 2;
+}
+void OutPoint(point q)
+{
+    printf("(%.2lf %.2lf) ", q.x, q.y);
+}
+int IsConvex(point p[], int n) /* 判断是否凸多边形 */
+{
+    for(int i = 1;i <= n;i++)
+        if(multi(p[i % n] - p[i - 1], p[(i + 1) % n] - p[i % n]) < 0) return 0;
+    return 1;
+}
+int IsInConvex(point p[], int n, point q) /* 点是否在凸多边形内 */
+{
+    double area = 0.0;
+    for(int i = 0;i < n;i++)
+        area += AreaOfThree(q, p[i], p[i + 1]);
+    if(fabs(area - fabs(AreaOfPloy(p, n))) < eps) return 1;
+    return 0;        
+}
+double min(double a, double b)
+{
+    return a < b ? a : b;
+}
+double disPointToSeg(point p1, point p2, point p3)
+{
+    double a = dis(p1, p2);
+    double b = dis(p1, p3);
+    double c = dis(p2, p3);
+    if(fabs(a + b - c) < eps) return 0;
+    if(fabs(a + c - b) < eps || fabs(b + c - a) < eps) return min(a, b);
+    double t1 = -a * a + b * b + c * c;
+    double t2 = a * a - b * b + c * c;
+    if(t1 <= 0 || t2 <= 0) return min(a, b);  
+    double l = (a + b + c) / 2;
+    double s = sqrt(l * (l - a) * (l - b) * (l - c));
+    return 2 * s / c;
+}
+int main()
+{
+    //freopen("pD1.in", "r", stdin);
+    //freopen("outbie.out", "w", stdout);
+    int n;
+    circle peg;
+    point p[1000];
+    while(scanf("%d", &n) != EOF)
+    {
+        if(n < 3) break;
+        scanf("%lf%lf%lf", &peg.r, &peg.c.x, &peg.c.y);
+        for(int i = 0;i < n;i++)
+            scanf("%lf%lf", &p[i].x, &p[i].y);
+        p[n] = p[0];
+        if(AreaOfPloy(p, n) < 0) ChangeDir(p, n);
+        p[n] = p[0];
+        if(!IsConvex(p, n))
+        {
+            printf("HOLE IS ILL-FORMED\n");
+            continue;
+        }
+        if(!IsInConvex(p, n, peg.c))
+        {
+            printf("PEG WILL NOT FIT\n");
+            continue;
+        }
+        int success = 1;
+        for(int i = 0;i < n;i++)
+            if(disPointToSeg(peg.c, p[i], p[i + 1]) < peg.r) 
+            {
+                success = 0;
+                printf("PEG WILL NOT FIT\n");
+                break;
+            }
+        if(success == 1) printf("PEG WILL FIT\n");
+    }
+    return 0;
+}
+
+
+

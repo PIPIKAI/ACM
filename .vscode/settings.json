@@ -1,0 +1,13 @@
+{
+    "C_Cpp.errorSquiggles": "Enabled",
+    "javascript.suggest.paths": false,
+    "code-runner.runInTerminal": true,
+    "files.associations": {
+        "iostream": "cpp",
+        "complex": "cpp",
+        "ostream": "cpp",
+        "cmath": "cpp"
+    },
+    "code-runner.saveFileBeforeRun": true,
+    "git.ignoreLimitWarning": true
+}
