@@ -8,6 +8,7 @@
 			"#include <vector>",
 			"#include <queue>",
 			"#include <cmath>",
+			"#include<cstring>",
 			"using namespace std;",
 			"#define Max(x,y) y>x?x=y:x=x",
 			"#define mem(a,b)  memset( a,b,sizeof a)",
