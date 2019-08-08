@@ -1,0 +1,13 @@
+{
+	"Print to console": {
+		"scope": "cpp",
+		"prefix": "ojprint",
+		"body": [
+			"for(int ${2:i} = 0; ${2:i} < ${1:n}; ${2:i}++){",
+			"    printf(i ? \" %d\" : \"%d\", $3[i]);",
+			"}",
+			"putchar('\\n');"
+		],
+		"description": "last no blank Print"
+	}
+}

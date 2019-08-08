@@ -1,0 +1,16 @@
+{
+	"Print to console": {
+		"scope": "cpp",
+		"prefix": "ojcase",
+		"body": [
+			"int T,Case=0;",
+			"cin>>T;",
+			"while(T--){",
+			"    $0",
+			"    cout<<\"Case \"<<++Case<<\": \";",
+			"    cout<<endl;",
+			"}"
+		],
+		"description": "OJ case"
+	}
+}
