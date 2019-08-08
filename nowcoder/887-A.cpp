@@ -15,15 +15,17 @@ int main()
     cin>>T;
     while(T--){
         cin>>s;
+        int z[2]={0,0},cnt=1;
         string tp="";
         for(int i=0;i<s.size();i++){
-            if(s[i-1]=='1' &&s[i]=='0'){
-                ans.push_back(tp);
-                tp=s[i];
-            }
-            else{
-                tp+=s[i];
-            }
+           if(s[i]=='0'){
+            tp+=s[i];
+            z++;
+           }
+           else{
+            z=0;
+           }
+
         }
         if(tp.size()){
             ans.push_back(tp);
