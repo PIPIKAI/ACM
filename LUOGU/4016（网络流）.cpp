@@ -11,16 +11,21 @@ typedef long long ll;
 const int inf=0x7fffffff;
 const int maxn = 1e5+7;
 int n,m;
-int f[maxn];
+int f[maxn],mp[maxn];
 int main()
 {
     std::ios::sync_with_stdio(false);
-    int T,Case=0;
-    cin>>T;
-    while(T--){
-        
-        cout<<"Case "<<++Case<<": ";
-        cout<<endl;
+    int sum=0;
+    cin>>n;
+    for(int i=1;i<=n;i++){
+        mp[i]=i+1;
     }
+    mp[n]=1;
+    for(int i=1;i<=n;i++){
+        cin>>f[i];
+        sum+=f[i];
+    }
+    cout<<sum/n<<endl;
+    
     return 0;
 }
