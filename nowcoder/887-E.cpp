@@ -14,7 +14,7 @@ const int inf=0x7fffffff;
 const int maxn = 4e5+7;
 int n;
 ll x[maxn],y[maxn],a[3],b[3],c[3],m[3];
-ll l[maxn],r[maxn];
+ll l[maxn],r[maxn],li[maxn*8],tot;
 struct node{
     int l,r;
     ll lazy,sum;
@@ -78,9 +78,7 @@ ll query(int x,int l,int r){
         return ans;
     }
 }
-int main()
-{
-    std::ios::sync_with_stdio(false);
+void init(){
     cin>>n;
     cin>>x[1]>>x[2]>>a[1]>>b[1]>>c[1]>>m[1];
     cin>>y[1]>>y[2]>>a[2]>>b[2]>>c[2]>>m[2];
@@ -89,8 +87,17 @@ int main()
             x[i]=(a[1]*x[i-1]+b[1]*x[i-2]+c[1])% m[1];
             y[i]=(a[2]*y[i-1]+b[2]*y[i-2]+c[2])% m[2];
         }
-        l[i]=min(x[i],y[i]);
-        r[i]=max(x[i],y[i]);
+        l[i]=min(x[i],y[i])+1;
+        r[i]=max(x[i],y[i])+1;
+        li[++tot]=l[i];li[++tot]=r[i];
     }
+    sort(li+1,li+tot+1);
+    tot=unique(li+1,li+1+tot)-li-1;
+    
+}
+int main()
+{
+    std::ios::sync_with_stdio(false);
+    
     return 0;
 }
