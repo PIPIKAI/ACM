@@ -9,7 +9,8 @@
         "ostream": "cpp",
         "cmath": "cpp",
         "queue": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "random": "cpp"
     },
     "code-runner.saveFileBeforeRun": true,
     "git.ignoreLimitWarning": true

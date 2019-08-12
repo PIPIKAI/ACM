@@ -1,1 +1,1 @@
-sum
+solve(x-1)+solve(r)
