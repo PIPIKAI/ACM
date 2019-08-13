@@ -1,45 +1,46 @@
-#include <algorithm>
-#include <cstdio>
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include<cstring>
+#include<bits/stdc++.h>
 using namespace std;
-#define Max(x,y) y>x?x=y:x=x
-#define mem(a,b)  memset( a,b,sizeof a)
-typedef long long ll;
-const int inf=0x7fffffff;
-const int maxn = 1e5+7;
-int n,m;
-int f[maxn];
+const int N = 1e5 + 10;
+int a[N], b[N], n;
+bool jug()
+{
+    int cnt[3] = {0, 0, 0}, tot = 0;
+    for(int i=1;i<=n;i++)
+    {
+        if(a[i]%2 && b[i] == 2) return false;
+        if(b[i] == 2)   cnt[2]++,   cnt[0]++;
+        if(a[i] > 1 && b[i] == 1)   cnt[1]++,   cnt[0]++;
+    }
+    if(cnt[0]>1)    return false;
+    if(cnt[1] == 1) {
+        for(int i=1;i<=n;i++)
+            if(b[i] == 1 && a[i] > 1)   tot ^= (a[i]%2?0:1);
+            else    tot ^= a[i];
+        return !(tot?1:0);
+    }
+    else if(cnt[2] == 1) {
+        for(int i=1;i<=n;i++)
+            if(b[i] != 2)
+                tot ^= a[i];
+        return !(tot?1:0);
+    }
+    else {
+        for(int i=1;i<=n;i++)
+            tot ^= a[i];
+        return tot;
+    }
+}
 int main()
 {
-    std::ios::sync_with_stdio(false);
     int T;
-    int ji=0,ou=0;
-    cin>>T;
-    while (T--)
+    scanf("%d",&T);
+    while(T--)
     {
-        cin>>n;
-        int sum=n;
-        for(int i=0,tp;i<n;i++){
-            cin>>f[i];
-        }
-        for(int i=0,tp;i<n;i++){
-            cin>>tp;
-            if(tp==1 && 0==f[i]%2){
-                sum++;
-            }
-            if(tp==2 && f[i]%2 ){
-                sum++;
-            }
-        }
-        if(sum%2){
-            cout<<"Alice"<<endl;
-        }else{
-            cout<<"Bob"<<endl;
-        }
+        scanf("%d",&n);
+        for(int i=1;i<=n;i++)
+            scanf("%d",&a[i]);
+        for(int i=1;i<=n;i++)
+            scanf("%d",&b[i]);
+        printf("%s\n", jug() ? "Alice" : "Bob");
     }
-    return 0;
 }

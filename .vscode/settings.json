@@ -10,8 +10,33 @@
         "cmath": "cpp",
         "queue": "cpp",
         "bitset": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "cstring": "cpp"
     },
     "code-runner.saveFileBeforeRun": true,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "search.followSymlinks": false,
+    "git.enabled": false,
+    "git.autorefresh": false,
+    "workbench.colorTheme": "Nord",
+    "workbench.iconTheme": "vscode-icons",
+    "window.zoomLevel": 2,
+    "files.autoGuessEncoding": true,
+    "backgroung.enable": true,
+    "background.customImages": [
+        "file:///D:/background/背景1.png",
+    ],
+    "background.style": {
+        "content": "''",
+        "pointer-events": "none",
+        "position": "absolute",
+        "z-index": "99999",
+        "width": "100%",
+        "height": "100%",
+        "background-position": "100% 100%",
+        "background-repeat": "no-repeat",
+        "opacity": 0.085
+    },
+    "background.useDefault": false,
+    
 }

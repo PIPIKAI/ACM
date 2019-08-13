@@ -38,7 +38,7 @@ void built(int x,int l,int r){
 void update(int x,int l,int r,int val,int flag){
     int L=tree[x].l,R=tree[x].r;
     if(L==R){
-        cout<<L<<endl;
+        //cout<<L<<endl;
         flag ? tree[x].minr=val : tree[x].maxl=val;
     }
     else{
@@ -47,7 +47,6 @@ void update(int x,int l,int r,int val,int flag){
         update(x<<1,l,r,val,flag);
         if(mid<r)
         update(x<<1|1,l,r,val,flag);
-        
         push_up(x);
     }
 }
@@ -89,13 +88,11 @@ int main()
                 a!=b ?cout<<b-a-1<<endl : cout<<0<<endl;
             }else if(c=='R'){
                 x=q.top();
-                //cout<<x<<endl;
-                update(1,n+1,x,x,0);
-                update(1,0,x,x,1);
+                update(1,x,x,n+1,1);
+                update(1,x,x,0,0);
                 q.pop();
             }
         }
-        cout<<endl;
     }
     return 0;
 }
