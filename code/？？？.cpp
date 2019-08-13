@@ -16,11 +16,6 @@ int f[maxn];
 int main()
 {
     std::ios::sync_with_stdio(false);
-    while (cin>>n)
-    {
-        cout<<n<<endl;
-    }
-    
     cout<<"hello world!"<<endl;
     return 0;
 }

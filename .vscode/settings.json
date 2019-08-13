@@ -16,7 +16,7 @@
     "code-runner.saveFileBeforeRun": true,
     "git.ignoreLimitWarning": true,
     "search.followSymlinks": false,
-    "git.enabled": false,
+    "git.enabled": true,
     "git.autorefresh": false,
     "workbench.colorTheme": "Nord",
     "workbench.iconTheme": "vscode-icons",
