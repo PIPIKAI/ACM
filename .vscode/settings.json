@@ -1,5 +1,5 @@
 {
-    "C_Cpp.errorSquiggles": "Enabled",
+    "C_Cpp.errorSquiggles": "Disabled",
     "javascript.suggest.paths": false,
     "code-runner.runInTerminal": true,
     "files.associations": {
@@ -20,7 +20,7 @@
     "git.autorefresh": false,
     "workbench.colorTheme": "Nord",
     "workbench.iconTheme": "vscode-icons",
-    "window.zoomLevel": 2,
+    "window.zoomLevel": 1,
     "files.autoGuessEncoding": true,
     "backgroung.enable": true,
     "background.customImages": [

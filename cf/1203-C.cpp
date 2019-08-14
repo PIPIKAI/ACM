@@ -5,33 +5,30 @@ typedef long long ll;
 #define ffr(i,a,b)  for(int i=a;i<b;i++)
 #define mem(a,b)  memset( a,b,sizeof a)
 #define Max(x,y) y>x?x=y:x=x
-const int maxn=2e5+7;
+const int maxn=4e5+7;
 int n,k;
-ll f[maxn],sum[maxn];
+ll gcd(ll a,ll b) {while(b^=a^=b^=a%=b);return a;}
+ll f[maxn];
 int main()
 {
     std::ios::sync_with_stdio(false);
-    cin>>n>>k;
-    for(int i=0;i<n;i++){
+    cin>>n;
+    cin>>f[0];
+    ll a=f[0];
+    for(int i=1;i<n;i++){
         cin>>f[i];
+        a=gcd(f[i],a);
     }
-    sort(f,f+n);
-    int mid=n/2;
-    for(int i=0;i<n;i++){
-       sum[i]=f[i]+sum[i-1];
-    }
-    for(int i=n-1;i>=mid;i--){
-        if(i==mid){
-            cout<<f[i]+k<<endl;
-            break;
+    ll ans=0;
+    for(ll i=1;i*i<=a;i++){
+        if(a%i==0){
+            if(i*i==a){
+                ans++;
+            }else{
+                ans+=2;
+            }
         }
-        ll s=sum[i-1] - sum[mid-1];
-        if(f[i] <= (s+k)/(i-mid) ){
-            ll ans= (s+k+f[i])/(i-mid+1);
-            cout<<ans<<endl;
-            break;
-        }
-
     }
+    cout<<ans<<endl;
     return 0;
 }
