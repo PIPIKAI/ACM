@@ -20,7 +20,7 @@
     "git.autorefresh": false,
     "workbench.colorTheme": "Nord",
     "workbench.iconTheme": "vscode-icons",
-    "window.zoomLevel": 1,
+    "window.zoomLevel": 2,
     "files.autoGuessEncoding": true,
     "backgroung.enable": true,
     "background.customImages": [

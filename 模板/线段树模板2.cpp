@@ -91,7 +91,7 @@ ll query(int x, int l, int r) {
 }
 int main() {
     std::ios::sync_with_stdio(false);
-    cin >> n >> q >> p;
+    cin >> n >> q >> pzz;
     for(int i = 1; i <= n; i++) {
         cin >> a[i];
     }
