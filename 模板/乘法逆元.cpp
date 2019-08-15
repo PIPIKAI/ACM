@@ -65,7 +65,7 @@ int main()
         //for(ll i=1;i<=n;i++){
           //  cout<<inv2(i,mod)<<endl;
         //}
-        //cout<<inv1(n,mod)<<" "<<inv2(n,mod)<<endl;
-        inv3(n,mod);
+        cout<<inv2(n,mod)<<endl;
+        //inv3(n,mod);
     }
 }

@@ -11,12 +11,13 @@
         "queue": "cpp",
         "bitset": "cpp",
         "random": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "iosfwd": "cpp"
     },
     "code-runner.saveFileBeforeRun": true,
     "git.ignoreLimitWarning": true,
     "search.followSymlinks": false,
-    "git.enabled": true,
+    "git.enabled": false,
     "git.autorefresh": false,
     "workbench.colorTheme": "Nord",
     "workbench.iconTheme": "vscode-icons",
