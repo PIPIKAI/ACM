@@ -16,7 +16,9 @@
     },
     "python.autoComplete.addBrackets": true,
     "python.autoComplete.extraPaths": [],
-    "python.pythonPath": "C:\\Users\\kiass\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.pythonPath":"C:\\Users\\Administrator\\AppData\\Local\\Programs\\Python\\Python37-32",
+    //"python.pythonPath": "C:\\Users\\kiass\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    
     "python.jediEnabled": true,
     "code-runner.saveFileBeforeRun": true,
     "git.ignoreLimitWarning": true,
@@ -43,4 +45,6 @@
         "opacity": 0.085
     },
     "background.useDefault": false,
+    //"compilerPath": "C:\\Program Files (x86)\\mingw-w64\\i686-8.1.0-posix-dwarf-rt_v6-rev0\\mingw32\\bin\\gcc.exe",
+
 }
