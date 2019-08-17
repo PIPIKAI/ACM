@@ -1,7 +1,6 @@
 import requests
 import random
 import lxml
-
 def solve():
     username="14173903380"
     password=""

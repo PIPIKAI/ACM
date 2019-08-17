@@ -14,6 +14,10 @@
         "cstring": "cpp",
         "iosfwd": "cpp"
     },
+    "python.autoComplete.addBrackets": true,
+    "python.autoComplete.extraPaths": [],
+    "python.pythonPath": "C:\\Users\\kiass\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.jediEnabled": true,
     "code-runner.saveFileBeforeRun": true,
     "git.ignoreLimitWarning": true,
     "search.followSymlinks": false,
@@ -39,5 +43,4 @@
         "opacity": 0.085
     },
     "background.useDefault": false,
-    
 }

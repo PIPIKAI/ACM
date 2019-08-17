@@ -1,1 +1,3 @@
-page_total
+for _ in num_list:
+#     if(_!="\n"):
+#         print()
