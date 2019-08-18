@@ -48,11 +48,12 @@ ll inv2(ll a,ll mod)//费马小定理
 
 void inv3(ll n,ll mod)//线性递推求逆元
 {
+    mod=n;
     inv[1]=1;
     puts("1");
     for(int i=2;i<=n;i++)
     {
-        inv[i]=(mod-mod/i)*inv[mod%i]%mod;
+        inv[i]=(i-mod/i)*inv[mod%i]%mod;
         printf("%lld\n",inv[i]);
     }
 }
@@ -60,12 +61,12 @@ void inv3(ll n,ll mod)//线性递推求逆元
 int main()
 {
     ll n,mod;
-    scanf("%lld%lld",&n,&mod);
+    while(~scanf("%lld%lld",&n,&mod))
     {
         //for(ll i=1;i<=n;i++){
           //  cout<<inv2(i,mod)<<endl;
         //}
-        cout<<inv2(n,mod)<<endl;
+        cout<<inv1(n,mod)<<endl;
         //inv3(n,mod);
     }
 }

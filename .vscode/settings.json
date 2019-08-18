@@ -12,7 +12,10 @@
         "bitset": "cpp",
         "random": "cpp",
         "cstring": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "regex": "cpp"
     },
     "python.autoComplete.addBrackets": true,
     "python.autoComplete.extraPaths": [],
@@ -27,7 +30,7 @@
     "git.autorefresh": false,
     "workbench.colorTheme": "Nord",
     "workbench.iconTheme": "vscode-icons",
-    "window.zoomLevel": 2,
+    "window.zoomLevel": 1,
     "files.autoGuessEncoding": true,
     "backgroung.enable": true,
     "background.customImages": [

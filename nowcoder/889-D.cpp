@@ -1,21 +1,31 @@
-#include <algorithm>
-#include <cstdio>
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include<cstring>
+#include<bits/stdc++.h>
 using namespace std;
-#define Max(x,y) y>x?x=y:x=x
-#define mem(a,b)  memset( a,b,sizeof a)
-typedef __int128_t ll;
-const int inf=0x7fffffff;
-const int maxn = 1e5+7;
-ll a,b;
-
+typedef long long ll;
+ll f[100];
+ll n, need;
+map<ll, string> vis;
+void dfs(int l, int r, ll sum, string s, int flag)
+{
+    if (l >= r){
+        if (flag){
+            if (vis[need - sum] != "")
+                cout << vis[need - sum] << s << endl;
+        }
+        else{
+            vis[sum] = s;
+        }
+        return;
+    }
+    dfs(l + 1, r, sum + f[l], s + '1', flag);
+    dfs(l + 1, r, sum, s + '0', flag);
+}
 int main()
 {
     std::ios::sync_with_stdio(false);
-   cin>>a>>b;
+    cin >> n >> need;
+    for (int i = 0; i < n; i++)
+        cin >> f[i];
+    dfs(0, n / 2, 0, "", 0);
+    dfs(n / 2, n, 0, "", 1);
     return 0;
 }
