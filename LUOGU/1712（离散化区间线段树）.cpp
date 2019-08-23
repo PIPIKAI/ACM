@@ -95,7 +95,6 @@ int main()
 {
     std::ios::sync_with_stdio(false);
     init();
-    
     ll l=1,ans=inf;
     for(int i=1;i<=n&&l<=n;i++){
         update(1,f[i].l,f[i].r,1);
