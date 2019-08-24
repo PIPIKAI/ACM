@@ -1,5 +1,5 @@
 {
-    "C_Cpp.errorSquiggles": "Disabled",
+    "C_Cpp.errorSquiggles": "Enabled",
     "javascript.suggest.paths": false,
     "code-runner.runInTerminal": true,
     "files.associations": {
@@ -25,7 +25,7 @@
     "python.jediEnabled": true,
     "code-runner.saveFileBeforeRun": true,
     "git.ignoreLimitWarning": true,
-    "search.followSymlinks": false,
+    "search.followSymlinks": true,
     "git.enabled": false,
     "git.autorefresh": false,
     "workbench.colorTheme": "Nord",
