@@ -18,7 +18,7 @@ void built(int &cur,int l,int r){
 }
 void update(int l,int r,int &x,int y,int pos){
     T[++cnt]=T[y];T[cnt].sum++,x=cnt;
-    if(l==r) return;
+    if(l==r) return ;
     if(mid>= pos){
         update(l,mid,T[x].l,T[y].l,pos);
     }
@@ -67,6 +67,7 @@ int main()
         // for(int i=0;i<=n;i++){
         //     debug(root[i],1,n);
         // }
+        //求l 到 r 里面 大于等于 h 的数的个数
         cout<<"Case "<<++ca<<":"<<endl;
         while(m--){
             int l,r,h;
