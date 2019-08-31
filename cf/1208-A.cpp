@@ -16,15 +16,12 @@ int f[maxn];
 int main()
 {
     std::ios::sync_with_stdio(false);
-    string s;
-    cin>>s;
-    for(int i=0;i<s.size();i++){
-        if(s[i]=='.'){
-            s.insert(s.begin()+i,'[');
-            s.insert(s.begin()+i+2,']');
-            i+=2;
-        }
+    int T,a,b;
+    cin>>T;
+    while(T--){
+        cin>>f[0]>>f[1]>>n;
+        f[2]=f[1]^f[0];
+        cout<<f[n%3]<<endl;
     }
-    cout<<s<<endl;
     return 0;
 }
