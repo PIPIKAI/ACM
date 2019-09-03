@@ -51,7 +51,7 @@ int main()
             }
             pt=tp;
              i=d > tp.b ? 1 : 0;
-             j=2*tp.b-tp.a > tp.b ? 1:0;
+            j=2*tp.b-tp.a > tp.b ? 1:0;
             if(i==j){
                 pt.b=2*tp.b-tp.a;
                 pt.ans+='A';
