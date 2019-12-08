@@ -2,8 +2,8 @@
 #include<stdio.h>
 #include<string.h>
 using namespace std;
-const int maxn=1e6+7;
-int n,prime[maxn];//存素数 
+const int maxn=1e4+7;
+int n=maxn,prime[maxn];//存素数 
 bool vis[maxn];//保证不做素数的倍数 
 int check[maxn];
 void eur(){
@@ -31,9 +31,15 @@ void ini(){
             if(i % prime[j] == 0) break;//关键！！！！ 
         }
     }
+    for (int i = 0; i < maxn; ++i)
+    {
+        if(!vis[i])
+        printf("%d\n",i );
+    }
 }
 int main()
 {
+    ini();
     int n, cnt = 0;
     
     printf("%d\n", cnt);
