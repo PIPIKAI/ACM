@@ -1,0 +1,12 @@
+abc  with  opq相似度：6
+abc  with  ppk相似度：4
+abc  with  wwt相似度：6
+opq  with  abc相似度：6
+opq  with  ppk相似度：5
+opq  with  wwt相似度：8
+ppk  with  abc相似度：4
+ppk  with  opq相似度：5
+ppk  with  wwt相似度：5
+wwt  with  abc相似度：6
+wwt  with  opq相似度：8
+wwt  with  ppk相似度：5
