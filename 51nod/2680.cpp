@@ -4,10 +4,11 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
 #define mem(x,y) memset(x, y, sizeof(x))
-const int maxn=1e4+7;
+const int maxn = 1e3+7;
 const int inf = 0x3f3f3f3f;
-int f[107],dp[maxn];
-int n,sum,ans;
+const int mod = 998244353;
+int l[maxn],r[maxn],dp[207][10007];
+int n,ans;
 #define LOCAL
 int main(int argc, char * argv[]) 
 {
@@ -18,17 +19,21 @@ int main(int argc, char * argv[])
     #endif
     ios_base::sync_with_stdio(false);
     cin>>n;
-    for (int i = 0; i < n; ++i){
-        cin>>f[i];
-        sum+=f[i];
+    for(int i=1;i<=n;i++){
+    	cin>>l[i]>>r[i];
     }
-    for(int i=0;i<n;i++){
-        for(int V=(sum/2);V>=f[i];V--){
-            int vv=abs(V-f[i]);// 体积，f[i] 为价值
-            dp[V]=max(dp[V],dp[vv]+f[i]);
-            ans=max(ans,dp[V]);// 找到体积为sum/2，的最大的价值
-        }
+    dp[0][0]=1;
+    for(int i=1;i<=n;i++){
+    	for(int j=l[i-1];j<l[i];j++){
+    		dp[i][l[i]]=(dp[i-1][j]+dp[i][l[i]])%mod;
+    	}
+    	for(int j=l[i]+1;j<=r[i];j++){
+    		dp[i][j]=(dp[i-1][j-1]+dp[i][j-1])%mod;
+    	}
     }
-    cout<<abs(ans*2-sum)<<'\n';
+    for(int i=l[n];i<=r[n];i++){
+    	ans=(ans+dp[n][i])%mod;
+    }
+    cout<<ans<<endl;
     return 0;
 }

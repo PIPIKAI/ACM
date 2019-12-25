@@ -4,11 +4,17 @@ using namespace std;
 typedef long long ll;
 typedef unsigned long long ull;
 #define mem(x,y) memset(x, y, sizeof(x))
-const int maxn=1e4+7;
+const int maxn=1e3+7;
 const int inf = 0x3f3f3f3f;
-int f[107],dp[maxn];
-int n,sum,ans;
+struct node
+{
+	double x,y;
+}f[maxn];
+double dis[maxn][maxn];
+bool vis[maxn];
+int n,m;
 #define LOCAL
+
 int main(int argc, char * argv[]) 
 {
     
@@ -17,18 +23,16 @@ int main(int argc, char * argv[])
     //freopen("C:/Users/Administrator/Documents/ACM/code/data.out", "w", stdout);
     #endif
     ios_base::sync_with_stdio(false);
-    cin>>n;
-    for (int i = 0; i < n; ++i){
-        cin>>f[i];
-        sum+=f[i];
+    int t=0;
+    while(~scanf("%d",&n)&&n){
+    	for (int i = 0; i < n; ++i){
+    		scanf("%lf%lf",&f[i].x，&f[i].y);
+    	}
+
+
+    	printf("Scenario #%d\n",++t);
+		printf("Frog Distance = %.3lf\n\n",edge[i].dis);
     }
-    for(int i=0;i<n;i++){
-        for(int V=(sum/2);V>=f[i];V--){
-            int vv=abs(V-f[i]);// 体积，f[i] 为价值
-            dp[V]=max(dp[V],dp[vv]+f[i]);
-            ans=max(ans,dp[V]);// 找到体积为sum/2，的最大的价值
-        }
-    }
-    cout<<abs(ans*2-sum)<<'\n';
+
     return 0;
 }

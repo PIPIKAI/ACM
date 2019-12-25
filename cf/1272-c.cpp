@@ -29,7 +29,6 @@ int main(int argc, char * argv[])
     ll len=0;
     for(int i=0;i<s.size();i++){
     	if(f[s[i]-'a']==0){
-    		// cout<<len<<endl;
     		ans+= (1+len)*len/2;
     		len=0;
     	}

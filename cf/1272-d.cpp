@@ -14,13 +14,10 @@ int main(int argc, char * argv[])
 {
     
     #ifdef LOCAL
-    // freopen("C:/Users/Administrator/Documents/ACM/code/data.in", "r", stdin);
-    //freopen("C:/Users/Administrator/Documents/ACM/code/data.out", "w", stdout);
     #endif
     ios_base::sync_with_stdio(false);
     cin>>n;
-    for (int i = 0; i < n; ++i)
-    {
+    for (int i = 0; i < n; ++i){
     	cin>>f[i];
     }
     k[0]=1;
@@ -36,16 +33,11 @@ int main(int argc, char * argv[])
     int ans=k[n-1];
     int tp=0,flag=0;
     tp=k[n-1];
-    // cout<<tp<<endl;
     for (int i = n-1; i>=0; i--)
     {
     	if(flag){
     		ans=max(ans,k[i]);
-    		// cout<<k[i]<<endl;
-    		if(f[i]<f[i+2]){
-    			ans=max(ans,tp+k[i]-1);
-    		}
-    		else if(f[i-1] <f[i+1] ){
+    		if(f[i]<f[i+2] || f[i-1] <f[i+1]){
     			ans=max(ans,tp+k[i]-1);
     		}
     		tp=k[i];
@@ -54,18 +46,7 @@ int main(int argc, char * argv[])
     	if(k[i]==1){
     		flag=1;
     	}
-    	 
     }
     cout<<ans<<endl;
     return 0;
 }
-/***
-
-10
-1 2 5 3 4 5 3 6 7  8 
-
-4
-1 4 3 2
-3
-1 3 2
-*/
