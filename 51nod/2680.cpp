@@ -22,17 +22,20 @@ int main(int argc, char * argv[])
     for(int i=1;i<=n;i++){
     	cin>>l[i]>>r[i];
     }
-    dp[0][0]=1;
-    for(int i=1;i<=n;i++){
-    	for(int j=l[i-1];j<l[i];j++){
-    		dp[i][l[i]]=(dp[i-1][j]+dp[i][l[i]])%mod;
-    	}
-    	for(int j=l[i]+1;j<=r[i];j++){
-    		dp[i][j]=(dp[i-1][j-1]+dp[i][j-1])%mod;
-    	}
+    for(int i=l[1];i<=r[1];i++){
+    	dp[1][i]=1;
     }
-    for(int i=l[n];i<=r[n];i++){
-    	ans=(ans+dp[n][i])%mod;
+    for(int i=2;i<=n;i++){
+    	int pre=0;
+    	for(int j=1;j<=r[i];j++){
+    		if(j>=l[i]){
+    			dp[i][j]=pre;
+    			if(i==n){
+    				ans=(ans+dp[i][j])%mod;
+    			}
+    		}
+    		pre=(pre+dp[i-1][j])%mod;
+    	}
     }
     cout<<ans<<endl;
     return 0;
