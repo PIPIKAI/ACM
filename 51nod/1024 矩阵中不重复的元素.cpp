@@ -14,7 +14,6 @@ int main()
        {
            double t=(double)j*log2(1.0*i);
             s.insert(t);
-
        }
         cout<<s.size()<<endl;
     return 0;
