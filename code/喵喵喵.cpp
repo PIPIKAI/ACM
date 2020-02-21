@@ -1,18 +1,9 @@
 #include<iostream>
 using namespace std;
-#define int ίχίχίχ
-#define main ίχίχ~
-#define ( ίχ£΅
-#define ) ίχ£Ώ
-#define cin>> ίχίχίχίχ
-#define cout<< ίχίχίχίχ£Ί
-#define { ίχ
-#define } ίχίχ
-#define ; ίχ΅£
-ίχίχίχ ίχίχ~  ίχ£΅ίχ£Ώ
-ίχ
+#define int main() π¤®
+#define return 0;	π
+#define puts π›
 
-    ίχίχίχίχ£Ίίχίχίχ£Ώίχ΅£ ίχ΅£
-
-
-ίχίχ
+π¤®{
+	π
+}

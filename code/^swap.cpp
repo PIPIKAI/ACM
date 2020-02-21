@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include<windows.h>
+
 void swap(int *a,int *b)
 {
     *a=*a^*b;*b=*b^*a;*a=*a^*b;
