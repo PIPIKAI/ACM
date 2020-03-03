@@ -34,17 +34,45 @@ void output(vector<int> tp){
     }
     cout<<endl;
 }
+vector<int> mul(vector<int > a,int b){
+    int j=0;
+    std::vector<int> res;
+    for(auto i: a){
+        j=i*b+j;
+        res.push_back(j%10);
+        j=j/10;
+    }
+    while(j){
+        res.push_back(j%10);
+        j/=10;
+    }
+    return res;
+}
+vector<int> div(vector<int > a,int b){
+    std::vector<int > res;
+    bool is_first=true;
+    for(int i=a.size()-1,t=0;i>=0;i--){
+        t=t*10+a[i];
+        int x=t/b;
+        if(!is_first || x){
+            is_first=false;
+            res.push_back(x);
+        }
+        t%=b;
+    }
+    reverse(res.begin(),res.end());
+    return res;
+}
 int main(int argc, char * argv[]) 
 {
 	std::ios::sync_with_stdio(false);
     cin>>n;
-    cin>>a>>b;
-    for(int i=0;i<n;i++){
+    for(int i=0;i<=n;i++){
     	cin>>f[i].l>>f[i].r;
     }
-    sort(f,f+n-1,cmp);
+    sort(f+1,f+n+1,cmp);
     std::vector<int> ans(1,0),sl(1,1);
-    for(int i=0;i<n;i++){
+    for(int i=0;i<=n;i++){
     	ans=max_vec(ans,div(sl,f[i].r));
         sl=mul(sl,f[i].l);
     }
