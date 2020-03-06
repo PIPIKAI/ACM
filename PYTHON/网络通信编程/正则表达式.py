@@ -18,7 +18,8 @@ def get_url(content):
 
 # 5、匹配所有合法的身份证号码。
 def get_IDnumbers(content):
-	return re.findall(r'^([1-9])(\d{5})(19|20)(\d{2})((0[1-9])|(1[0-2]))(([0|1|2]\d)|3[0-1])(\d{3})([0-9]|X)$',content)
+	s=r'/^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$'
+	return re.search(s,content)
 # 先读入文件
 content=read_file('files/people.txt')
 
