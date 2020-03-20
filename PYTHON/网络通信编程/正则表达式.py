@@ -23,5 +23,5 @@ def get_IDnumbers(content):
 # 先读入文件
 content=read_file('files/people.txt')
 
-print(get_IDnumbers(content))
+print(get_email(content))
 
