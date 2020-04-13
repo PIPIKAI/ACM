@@ -1,30 +1,40 @@
-#!/usr/bin/env python
-#coding: utf-8
-from socket import *
-from time import ctime
-import select
-import sys
-HOST='172.16.45.135'
-PORT=21569
-BUFSIZ=1024
-ADDR=(HOST,PORT)  #服务器的地址与端口
- 
-tcpCliSock=socket(AF_INET,SOCK_STREAM) #生成客户端的套接字，并连上服务器
-tcpCliSock.connect(ADDR)
-input1=[tcpCliSock,sys.stdin]
- 
-while True:
-	readyInput,readyOutput,readyException=select.select(input1,[],[])
-	for indata in readyInput:
-		if indata==tcpCliSock:
-			data=tcpCliSock.recv(BUFSIZ)
-			if not data:
-				break
-			print (data)
-		else:
-			data=input()
-			if not data:
-				break
-			tcpCliSock.send('[%s] %s' %(ctime(),data)) #发送时间与数据
- 
-tcpCliSock.close()
+import socket
+from threading import Thread, Lock
+import datetime
+
+class Client:
+    def __init__(self, name, address):
+        self.name = name
+        self.addr = address
+        self.lock = Lock()
+
+    def start_client(self):
+        client = socket.socket()
+        client.connect(self.addr)
+        """创建一个接收消息的子线程"""
+        recv = Thread(target=self.recv_msg, args=(client,))
+        recv.start()
+        while True:
+            msg = input()
+            msgs =str(datetime.datetime.now())[:-7]+'  '+ self.name + ":" + msg
+            client.send(msgs.encode(encoding="utf-8"))
+            if "拜拜" in msg:
+                break
+        client.close()
+
+
+    def recv_msg(self, client):
+        """接收消息的子线程函数"""
+        while True:
+            data = client.recv(1024).decode(encoding='utf-8')
+            print(data)
+
+
+
+def main():
+    client = Client("A", ('192.168.2.103', 8080))
+    client.start_client()
+
+
+if __name__ == "__main__":
+    main()

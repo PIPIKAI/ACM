@@ -10,7 +10,7 @@ import json
 
 def get_that():
 	# 文库url
-	url = "https://wenku.baidu.com/view/93fa7250777f5acfa1c7aa00b52acfc788eb9f5a.html?from=search"
+	url = "https://wenku.baidu.com/view/2dd1b643336c1eb91a375da6.html"
 	sess = requests.Session()
 	html = sess.get(url).content.decode("gbk")
 	# 抓取到文档标题

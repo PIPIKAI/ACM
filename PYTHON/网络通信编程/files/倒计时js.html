@@ -1,0 +1,25 @@
+
+    <script>
+        window.onload=function(){
+            var go_time=new Date("2020/12/19 00:00:00");
+                 function  countdown(){
+                var now_time=new Date();
+                var alltime =go_time.getTime() -now_time.getTime ();  //总的时间（毫秒）
+                var scend = parseInt ((alltime/1000)%60  ) ;  //秒
+                var minute =parseInt((alltime/1000/60)%60  ) ;  //  分钟
+                var hour =parseInt((alltime/1000/60/60)%24 ) ;   //小时
+                var day=parseInt(alltime/1000/60/60/24);   //天数
+                var btime=document.getElementById("block");
+                var time1=document.getElementById("shi_jian");
+                time1.innerHTML ="考研倒计时："+day+"天"+hour+"时"+minute +"分"+scend +"秒";
+                setTimeout (countdown ,1);  //不加括号
+            }
+           countdown ();
+        }
+
+    </script>
+<a class="title is-5" >时间紧迫！</a>
+
+<div id="block">
+    <div id="shi_jian"></div>
+</div>

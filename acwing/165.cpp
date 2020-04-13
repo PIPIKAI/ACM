@@ -1,4 +1,10 @@
 //#pragma comment(linker, "/STACK:1024000000,1024000000")
+/**
+思路： 这题用dfs 如果全搜，就一定会超时
+所以开绿剪枝，剪枝方法：
+剪枝一：优先递归情况分支少的情况，即把排序，让大的树先填充
+剪枝二：当当前的层数大于最优解的层数时，直接return
+*/
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -39,3 +45,7 @@ int main(int argc, char * argv[])
     cout<<ans<<endl;
     return 0;
 }
+
+
+
+    	386271549752934861419568273275693184941825637638147952824716395593482716167359428
