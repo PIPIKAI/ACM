@@ -1,9 +1,0 @@
-
-
-
-
-
-
-print(get_data())
-
-
