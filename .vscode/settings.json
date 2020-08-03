@@ -28,7 +28,7 @@
     "search.followSymlinks": true,
     "git.enabled": false,
     "git.autorefresh": false,
-    "workbench.colorTheme": "Nord",
+    "workbench.colorTheme": "Solarized Light",
     "workbench.iconTheme": "vscode-icons",
     "window.zoomLevel": 1,
     "files.autoGuessEncoding": true,
